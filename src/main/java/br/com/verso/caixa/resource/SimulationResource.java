@@ -13,6 +13,8 @@ import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponses;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 
+import java.util.List;
+
 @Path("/api/v1/simulations")
 @Produces("application/json")
 @Consumes("application/json")
@@ -48,6 +50,14 @@ public class SimulationResource {
     public Response createSimulation(@Valid SimulationRequestDTO request) {
         SimulationResponseDTO response = service.createSimulation(request);
         return Response.status(Response.Status.CREATED).entity(response).build();
+    }
+
+    //buscar todas as simulações
+    @GET
+    @Operation(summary = "Listar todas as simulações", description = "Retorna uma lista contendo todas as simulações financeiras calculadas")
+    public Response getAllSimulations() {
+        List<SimulationResponseDTO> simulations = service.getAllSimulations();
+        return Response.ok(simulations).build();
     }
 
     @GET

@@ -16,6 +16,7 @@ import org.jboss.logging.Logger;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @ApplicationScoped
 public class SimulationService {
@@ -24,6 +25,14 @@ public class SimulationService {
 
     private final SimulationRepository repository;
     private final SimulationMapper mapper;
+
+
+    public List<SimulationResponseDTO> getAllSimulations() {
+        List<Simulation> simulations = repository.findAllWithMemories();
+        return simulations.stream()
+                .map(mapper::toResponseDTO)
+                .collect(Collectors.toList());
+    }
 
     public SimulationService(SimulationRepository repository, SimulationMapper mapper) {
         this.repository = repository;
