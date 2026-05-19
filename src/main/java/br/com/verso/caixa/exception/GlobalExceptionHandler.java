@@ -2,7 +2,9 @@ package br.com.verso.caixa.exception;
 
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
+import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.UriInfo;
 import jakarta.ws.rs.ext.ExceptionMapper;
 import jakarta.ws.rs.ext.Provider;
 import org.jboss.logging.Logger;
@@ -13,6 +15,9 @@ import java.util.stream.Collectors;
 public class GlobalExceptionHandler implements ExceptionMapper<Exception> {
 
     private static final Logger LOG = Logger.getLogger(GlobalExceptionHandler.class);
+
+    @Context
+    private UriInfo uriInfo; // Permite obter o caminho da URL atual
 
     @Override
     public Response toResponse(Exception exception) {
@@ -38,12 +43,14 @@ public class GlobalExceptionHandler implements ExceptionMapper<Exception> {
     }
 
     private Response buildErrorResponse(int status, String error, String message) {
+        String path = uriInfo != null ? uriInfo.getPath() : "";
+
         ErrorResponse errorResponse = new ErrorResponse(
                 LocalDateTime.now(),
                 status,
                 error,
                 message,
-                ""
+                path
         );
 
         return Response.status(status)
@@ -51,4 +58,3 @@ public class GlobalExceptionHandler implements ExceptionMapper<Exception> {
                 .build();
     }
 }
-
